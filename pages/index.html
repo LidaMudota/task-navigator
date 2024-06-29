@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управление списком задач</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="task-manager">
+        <h1>Управление списком задач</h1>
+        <div class="task-input">
+            <input type="text" id="search-task" placeholder="Поиск задач">
+            <button id="create-task-list">Создать список задач</button>
+        </div>
+        <div class="filter-options">
+            <label for="filter-status">Статус:</label>
+            <select id="filter-status">
+                <option value="all">Все</option>
+                <option value="active">Активные</option>
+                <option value="completed">Выполненные</option>
+            </select>
+            <label for="filter-deadline">Дедлайн:</label>
+            <input type="date" id="filter-deadline">
+        </div>
+        <div id="task-lists">
+            <!-- Списки задач будут добавляться сюда -->
+        </div>
+    </div>
+    <script src="../js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,207 @@
+/* style.css */
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f0f0; /* Светло-серый фон */
+    color: #333; /* Темный текст */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.task-manager {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 90%;
+    max-width: 600px;
+    margin-top: 30px; /* Использование margin-top вместо padding-top */
+}
+
+.task-manager h1 {
+    color: #333; /* Темный цвет заголовка */
+    margin-bottom: 20px;
+}
+
+.task-input {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.task-input input[type="text"],
+.task-input input[type="date"],
+.task-input select {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc; /* Светло-серая рамка */
+    outline: none;
+}
+
+.task-input input[type="text"] {
+    flex: 1; /* Растягиваем поле для ввода */
+}
+
+.filter-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.filter-options label {
+    font-size: 14px;
+    color: #555; /* Темно-серый цвет для текста */
+}
+
+.filter-options select,
+.filter-options input[type="date"] {
+    padding: 8px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #ccc; /* Светло-серая рамка */
+    outline: none;
+}
+
+#task-lists {
+    margin-top: 20px;
+}
+
+.task-list {
+    background-color: #f9f9f9; /* Очень светло-серый фон */
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Мягкая тень */
+    margin-bottom: 20px;
+}
+
+.task-list h2 {
+    color: #333; /* Темный цвет заголовка */
+    margin-bottom: 15px;
+}
+
+.list-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.list-actions button {
+    padding: 8px 16px;
+    font-size: 14px;
+    background-color: #4CAF50; /* Зеленая кнопка */
+    color: white; /* Белый текст */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.list-actions button:hover {
+    background-color: #45a049; /* Темнее зеленая при наведении */
+}
+
+.task {
+    background-color: #f0f0f0; /* Светло-серый фон задачи */
+    padding: 12px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Мягкая тень */
+    margin-bottom: 10px;
+}
+
+.task.completed-task {
+    background-color: #d3e0dc; /* Светло-зеленый фон выполненной задачи */
+}
+
+.task .text {
+    font-size: 16px;
+    color: #333; /* Темный текст */
+    margin-right: 10px;
+    flex: 1; /* Растягиваем текстовую часть на всю доступную ширину */
+}
+
+.task .task-time,
+.task .task-deadline,
+.task .task-priority {
+    font-size: 14px;
+    color: #666; /* Серый цвет для информации */
+    margin-right: 10px;
+}
+
+.task .actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.task .actions button {
+    padding: 6px 12px;
+    font-size: 14px;
+    background-color: #337AB7; /* Синяя кнопка */
+    color: white; /* Белый текст */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.task .actions button:hover {
+    background-color: #286090; /* Темнее синяя при наведении */
+}
+
+@media screen and (max-width: 768px) {
+    .task-input {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .task-input input[type="text"],
+    .task-input input[type="date"],
+    .task-input select {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .filter-options {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-options label {
+        margin-bottom: 5px;
+    }
+
+    .list-actions {
+        flex-direction: column;
+    }
+
+    .list-actions button {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .task-list {
+        padding: 10px;
+        margin-bottom: 15px;
+    }
+
+    .task .text {
+        font-size: 14px;
+    }
+
+    .task .actions button {
+        padding: 6px;
+        font-size: 12px;
+    }
+}

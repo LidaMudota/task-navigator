@@ -1,9 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
   const taskListsContainer = document.getElementById('task-lists');
-  const createTaskListButton = document.getElementById('create-task-list');
+  const createTaskListButton = document.getElementById('create-task-list'); // Исправлено здесь
   const searchTaskInput = document.getElementById('search-task');
   const filterStatus = document.getElementById('filter-status');
   const filterDeadline = document.getElementById('filter-deadline');
+  const reminderAudio = new Audio('../music/5470_pod-zvonok.ru__.mp3');  // Аудиофайл напоминания о дедлайне
 
   function createTaskList(listData = { tasks: [] }) {
       const taskList = document.createElement('div');
@@ -34,188 +35,234 @@ document.addEventListener('DOMContentLoaded', () => {
       const addTaskButton = taskList.querySelector('.add-task-btn');
       const newTaskInput = taskList.querySelector('.new-task-input');
       const newTaskDeadline = taskList.querySelector('.new-task-deadline');
-      const taskPriority = taskList.querySelector('.task-priority');
+      const newTaskPriority = taskList.querySelector('.task-priority');
       const activeTasksContainer = taskList.querySelector('.active-tasks');
       const completedTasksContainer = taskList.querySelector('.completed-tasks');
-      const deleteListButton = taskList.querySelector('.delete-list-btn');
       const randomizeTasksButton = taskList.querySelector('.randomize-tasks-btn');
+      const deleteListButton = taskList.querySelector('.delete-list-btn');
+
+      function createTask(taskData) {
+          const task = document.createElement('div');
+          task.classList.add('task');
+          if (taskData.completed) {
+              task.classList.add('completed-task');
+          }
+          task.innerHTML = `
+              <div class="text">${taskData.text}</div>
+              <div class="task-time">${new Date().toLocaleTimeString()}</div>
+              <div class="task-deadline">${taskData.deadline ? taskData.deadline : 'Без дедлайна'}</div>
+              <div class="task-priority">${taskData.priority === 'high' ? 'Высокий приоритет' : 'Обычная'}</div>
+              <div class="actions">
+                  <button class="complete-task-btn">Завершить</button>
+                  <button class="delete-task-btn">Удалить</button>
+                  <button class="add-subtask-btn">Добавить подзадачу</button>
+              </div>
+              <div class="subtasks"></div>
+          `;
+
+          const completeTaskButton = task.querySelector('.complete-task-btn');
+          const deleteTaskButton = task.querySelector('.delete-task-btn');
+          const addSubtaskButton = task.querySelector('.add-subtask-btn');
+          const subtasksContainer = task.querySelector('.subtasks');
+
+          completeTaskButton.addEventListener('click', () => {
+              taskData.completed = !taskData.completed;
+              if (taskData.completed) {
+                  completedTasksContainer.appendChild(task);
+                  task.classList.add('completed-task');
+              } else {
+                  activeTasksContainer.appendChild(task);
+                  task.classList.remove('completed-task');
+              }
+              saveTaskLists();
+          });
+
+          deleteTaskButton.addEventListener('click', () => {
+              task.remove();
+              saveTaskLists();
+          });
+
+          addSubtaskButton.addEventListener('click', () => {
+              const subtask = createSubtask({ text: '', completed: false });
+              subtasksContainer.appendChild(subtask);
+          });
+
+          if (taskData.subtasks) {
+              taskData.subtasks.forEach(subtaskData => {
+                  const subtask = createSubtask(subtaskData);
+                  subtasksContainer.appendChild(subtask);
+              });
+          }
+
+          return task;
+      }
+
+      function createSubtask(subtaskData) {
+          const subtask = document.createElement('div');
+          subtask.classList.add('subtask');
+          subtask.innerHTML = `
+              <input type="checkbox" ${subtaskData.completed ? 'checked' : ''}>
+              <input type="text" value="${subtaskData.text}" placeholder="Введите подзадачу">
+          `;
+
+          const checkbox = subtask.querySelector('input[type="checkbox"]');
+          const input = subtask.querySelector('input[type="text"]');
+
+          checkbox.addEventListener('change', () => {
+              subtaskData.completed = checkbox.checked;
+              checkAllSubtasksComplete(subtask.closest('.task'));
+              saveTaskLists();
+          });
+
+          input.addEventListener('input', () => {
+              subtaskData.text = input.value;
+              saveTaskLists();
+          });
+
+          return subtask;
+      }
+
+      function checkAllSubtasksComplete(task) {
+          const subtasks = task.querySelectorAll('.subtask');
+          const allCompleted = Array.from(subtasks).every(subtask => subtask.querySelector('input[type="checkbox"]').checked);
+          const completeTaskButton = task.querySelector('.complete-task-btn');
+
+          if (allCompleted) {
+              completeTaskButton.click();
+          }
+      }
 
       addTaskButton.addEventListener('click', () => {
-          const taskText = newTaskInput.value.trim();
-          const taskDeadline = newTaskDeadline.value;
-          const priority = taskPriority.value;
-          if (taskText !== '') {
-              addTask(taskText, taskDeadline, activeTasksContainer, completedTasksContainer, priority === 'high', listData);
-              newTaskInput.value = '';
-              newTaskDeadline.value = '';
-          }
+          const taskData = {
+              text: newTaskInput.value,
+              deadline: newTaskDeadline.value,
+              priority: newTaskPriority.value,
+              completed: false,
+              subtasks: []
+          };
+
+          const task = createTask(taskData);
+          activeTasksContainer.appendChild(task);
+          newTaskInput.value = '';
+          newTaskDeadline.value = '';
+          newTaskPriority.value = 'normal';
+          saveTaskLists();
       });
 
-      newTaskInput.addEventListener('keypress', (e) => {
-          if (e.key === 'Enter') {
-              addTaskButton.click();
+      randomizeTasksButton.addEventListener('click', () => {
+          const tasks = Array.from(activeTasksContainer.children);
+          for (let i = tasks.length - 1; i > 0; i--) {
+              const j = Math.floor(Math.random() * (i + 1));
+              activeTasksContainer.appendChild(tasks[j]);
           }
+          saveTaskLists();
       });
 
       deleteListButton.addEventListener('click', () => {
           taskList.remove();
-      });
-
-      randomizeTasksButton.addEventListener('click', () => {
-          randomizeTasks(activeTasksContainer);
-      });
-
-      listData.tasks.forEach(task => {
-          addTask(task.text, task.deadline, activeTasksContainer, completedTasksContainer, task.isPriority, listData, task.isCompleted, task.time);
+          saveTaskLists();
       });
 
       taskListsContainer.appendChild(taskList);
-  }
 
-  createTaskListButton.addEventListener('click', () => {
-      createTaskList();
-  });
-
-  function addTask(taskText, taskDeadline, activeTasksContainer, completedTasksContainer, isPriority = false, listData, isCompleted = false, time = new Date().toLocaleString()) {
-      const task = document.createElement('div');
-      task.classList.add(isCompleted ? 'completed-task' : 'task');
-      task.innerHTML = `
-          <div class="text">${taskText}</div>
-          <div class="task-time">${time}</div>
-          <div class="task-deadline">${taskDeadline ? `Дедлайн: ${taskDeadline}` : ''}</div>
-          <div class="task-priority">${isPriority ? 'Высокий приоритет' : 'Обычная задача'}</div>
-          <div class="actions">
-              <button class="complete-btn">${isCompleted ? 'Отменить' : 'Выполнено'}</button>
-              <button class="delete-btn">Удалить</button>
-          </div>
-      `;
-
-      if (taskDeadline) {
-          updateTaskColor(task, taskDeadline);
-      }
-
-      const completeBtn = task.querySelector('.complete-btn');
-      const deleteBtn = task.querySelector('.delete-btn');
-
-      completeBtn.addEventListener('click', () => {
-          toggleTaskCompletion(task, activeTasksContainer, completedTasksContainer, listData);
-      });
-
-      deleteBtn.addEventListener('click', () => {
-          task.remove();
-      });
-
-      const taskPrioritySelect = task.querySelector('.task-priority');
-      taskPrioritySelect.addEventListener('change', () => {
-          const newPriority = taskPrioritySelect.value === 'high';
-          changeTaskPriority(task, activeTasksContainer, isCompleted, newPriority);
-      });
-
-      if (isCompleted) {
-          completedTasksContainer.appendChild(task);
-      } else {
-          if (isPriority) {
-              activeTasksContainer.prepend(task);
-          } else {
-              activeTasksContainer.appendChild(task);
-          }
-      }
-
-      saveToLocalStorage();
-  }
-
-  function toggleTaskCompletion(task, activeTasksContainer, completedTasksContainer, listData) {
-      const isCompleted = task.classList.contains('task');
-      if (isCompleted) {
-          activeTasksContainer.removeChild(task);
-          task.classList.remove('task');
-          task.classList.add('completed-task');
-          completedTasksContainer.appendChild(task);
-          task.querySelector('.complete-btn').textContent = 'Отменить';
-      } else {
-          completedTasksContainer.removeChild(task);
-          task.classList.remove('completed-task');
-          task.classList.add('task');
-          activeTasksContainer.appendChild(task);
-          task.querySelector('.complete-btn').textContent = 'Выполнено';
-      }
-
-      saveToLocalStorage();
-  }
-
-  function randomizeTasks(tasksContainer) {
-      const tasks = Array.from(tasksContainer.children);
-      for (let i = tasks.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          tasksContainer.appendChild(tasks[j]);
-      }
-  }
-
-  function changeTaskPriority(task, activeTasksContainer, isCompleted, newPriority) {
-      const taskList = task.parentNode;
-      task.remove();
-      addTask(task.querySelector('.text').textContent, task.querySelector('.task-deadline').textContent.replace('Дедлайн: ', ''), activeTasksContainer, isCompleted ? taskList.querySelector('.completed-tasks') : taskList.querySelector('.active-tasks'), newPriority);
-  }
-
-  function updateTaskColor(task, taskDeadline) {
-      if (!taskDeadline) return;
-      const deadlineDate = new Date(taskDeadline);
-      const currentDate = new Date();
-      const oneDay = 24 * 60 * 60 * 1000;
-
-      if (deadlineDate - currentDate < oneDay && deadlineDate - currentDate > 0) {
-          task.classList.add('deadline-soon');
-      } else if (deadlineDate - currentDate <= 0) {
-          task.classList.add('deadline-passed');
-      }
-  }
-
-  function filterTasks() {
-      const searchText = searchTaskInput.value.trim().toLowerCase();
-      const status = filterStatus.value;
-      const deadline = filterDeadline.value;
-
-      document.querySelectorAll('.task, .completed-task').forEach(task => {
-          const taskText = task.querySelector('.text').textContent.toLowerCase();
-          const taskStatus = task.classList.contains('completed-task') ? 'completed' : 'active';
-          const taskDeadline = task.querySelector('.task-deadline').textContent.replace('Дедлайн: ', '');
-
-          let display = true;
-
-          if (searchText && !taskText.includes(searchText)) {
-              display = false;
-          }
-
-          if (status !== 'all' && status !== taskStatus) {
-              display = false;
-          }
-
-          if (deadline && taskDeadline && taskDeadline !== deadline) {
-              display = false;
-          }
-
-          task.style.display = display ? '' : 'none';
-      });
-  }
-
-  function saveToLocalStorage() {
-      const taskLists = Array.from(document.querySelectorAll('.task-list')).map(taskList => {
-          const tasks = Array.from(taskList.querySelectorAll('.task, .completed-task')).map(task => {
-              const isCompleted = task.classList.contains('completed-task');
-              return {
-                  text: task.querySelector('.text').textContent,
-                  deadline: task.querySelector('.task-deadline').textContent.replace('Дедлайн: ', '') || null,
-                  isPriority: task.classList.contains('task') && task.previousElementSibling && task.previousElementSibling.classList.contains('task-priority') && task.previousElementSibling.value === 'high',
-                  isCompleted,
-                  time: task.querySelector('.task-time').textContent
-              };
+      if (listData.tasks) {
+          listData.tasks.forEach(taskData => {
+              const task = createTask(taskData);
+              if (taskData.completed) {
+                  completedTasksContainer.appendChild(task);
+              } else {
+                  activeTasksContainer.appendChild(task);
+              }
           });
-          return { tasks };
+      }
+  }
+
+  function saveTaskLists() {
+      const taskLists = [];
+      document.querySelectorAll('.task-list').forEach(taskList => {
+          const tasks = [];
+          taskList.querySelectorAll('.task').forEach(task => {
+              const taskData = {
+                  text: task.querySelector('.text').textContent,
+                  completed: task.classList.contains('completed-task'),
+                  deadline: task.querySelector('.task-deadline').textContent === 'Без дедлайна' ? '' : task.querySelector('.task-deadline').textContent,
+                  priority: task.querySelector('.task-priority').textContent === 'Высокий приоритет' ? 'high' : 'normal',
+                  subtasks: []
+              };
+
+              task.querySelectorAll('.subtask').forEach(subtask => {
+                  const subtaskData = {
+                      text: subtask.querySelector('input[type="text"]').value,
+                      completed: subtask.querySelector('input[type="checkbox"]').checked
+                  };
+                  taskData.subtasks.push(subtaskData);
+              });
+
+              tasks.push(taskData);
+          });
+          taskLists.push({ tasks });
       });
       localStorage.setItem('taskLists', JSON.stringify(taskLists));
   }
 
-  searchTaskInput.addEventListener('input', filterTasks);
-  filterStatus.addEventListener('change', filterTasks);
-  filterDeadline.addEventListener('input', filterTasks);
+  function loadTaskLists() {
+      const taskLists = JSON.parse(localStorage.getItem('taskLists')) || [];
+      taskLists.forEach(listData => createTaskList(listData));
+  }
+
+  function checkDeadlines() {
+      const now = new Date();
+      document.querySelectorAll('.task').forEach(task => {
+          const deadlineText = task.querySelector('.task-deadline').textContent;
+          if (deadlineText !== 'Без дедлайна') {
+              const deadline = new Date(deadlineText);
+              if (deadline <= now && !task.classList.contains('completed-task')) {
+                  reminderAudio.play();
+              }
+          }
+      });
+  }
+
+  createTaskListButton.addEventListener('click', () => createTaskList()); // Добавлено событие клика для кнопки создания списка
+
+  searchTaskInput.addEventListener('input', () => {
+      const searchText = searchTaskInput.value.toLowerCase();
+      document.querySelectorAll('.task').forEach(task => {
+          const taskText = task.querySelector('.text').textContent.toLowerCase();
+          if (taskText.includes(searchText)) {
+              task.style.display = 'block';
+          } else {
+              task.style.display = 'none';
+          }
+      });
+  });
+
+  filterStatus.addEventListener('change', () => {
+      const filterValue = filterStatus.value;
+      document.querySelectorAll('.task').forEach(task => {
+          if (filterValue === 'all' ||
+              (filterValue === 'active' && !task.classList.contains('completed-task')) ||
+              (filterValue === 'completed' && task.classList.contains('completed-task'))) {
+              task.style.display = 'block';
+          } else {
+              task.style.display = 'none';
+          }
+      });
+  });
+
+  filterDeadline.addEventListener('change', () => {
+      const filterValue = filterDeadline.value;
+      document.querySelectorAll('.task').forEach(task => {
+          const taskDeadline = task.querySelector('.task-deadline').textContent;
+          if (filterValue === '' || taskDeadline === 'Без дедлайна' || new Date(taskDeadline) <= new Date(filterValue)) {
+              task.style.display = 'block';
+          } else {
+              task.style.display = 'none';
+          }
+      });
+  });
+
+  loadTaskLists();
+
+  setInterval(checkDeadlines, 60000);  // Проверяем дедлайны каждую минуту
 });

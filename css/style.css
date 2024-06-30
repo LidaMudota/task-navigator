@@ -160,6 +160,16 @@ body {
     background-color: #286090; /* Темнее синяя при наведении */
 }
 
+.subtask {
+    display: flex;
+    align-items: center;
+    margin: 5px 0;
+}
+
+.subtask input[type="checkbox"] {
+    margin-right: 10px;
+}
+
 @media screen and (max-width: 768px) {
     .task-input {
         flex-direction: column;

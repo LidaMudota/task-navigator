@@ -1,28 +1,33 @@
-/* style.css */
+@font-face {
+    font-family: 'QFT';
+    src: url('../font/q-for-the-memories.otf') format('truetype');
+}
 
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f0f0f0; /* Светло-серый фон */
-    color: #333; /* Темный текст */
+    font-family: 'QFT', sans-serif;
+    background-color: #333;
+    color: black;
     display: flex;
     justify-content: center;
     height: 100vh;
     margin: 0;
+    overflow: hidden; /* Предотвращение прокрутки страницы */
 }
 
 .task-manager {
-    background-color: #fff;
+    background: whitesmoke;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     text-align: center;
     width: 90%;
     max-width: 600px;
-    margin-top: 30px; /* Использование margin-top вместо padding-top */
+    margin-top: 30px;
+    overflow-y: auto;
 }
 
 .task-manager h1 {
-    color: #333; /* Темный цвет заголовка */
+    color: black;
     margin-bottom: 20px;
 }
 
@@ -41,12 +46,12 @@ body {
     padding: 10px;
     font-size: 16px;
     border-radius: 5px;
-    border: 1px solid #ccc; /* Светло-серая рамка */
+    border: 3px solid #b33c54;
     outline: none;
 }
 
 .task-input input[type="text"] {
-    flex: 1; /* Растягиваем поле для ввода */
+    flex: 1;
 }
 
 .filter-options {
@@ -60,7 +65,7 @@ body {
 
 .filter-options label {
     font-size: 14px;
-    color: #555; /* Темно-серый цвет для текста */
+    color: black;
 }
 
 .filter-options select,
@@ -68,7 +73,7 @@ body {
     padding: 8px;
     font-size: 14px;
     border-radius: 5px;
-    border: 1px solid #ccc; /* Светло-серая рамка */
+    border: 3px solid #3c54b3;
     outline: none;
 }
 
@@ -77,15 +82,15 @@ body {
 }
 
 .task-list {
-    background-color: #f9f9f9; /* Очень светло-серый фон */
+    background-color: #333;
     padding: 15px;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Мягкая тень */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin-bottom: 20px;
 }
 
 .task-list h2 {
-    color: #333; /* Темный цвет заголовка */
+    color: whitesmoke;
     margin-bottom: 15px;
 }
 
@@ -99,8 +104,8 @@ body {
 .list-actions button {
     padding: 8px 16px;
     font-size: 14px;
-    background-color: #4CAF50; /* Зеленая кнопка */
-    color: white; /* Белый текст */
+    background-color: #b3b33c;
+    color: black;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -108,33 +113,34 @@ body {
 }
 
 .list-actions button:hover {
-    background-color: #45a049; /* Темнее зеленая при наведении */
+    background-color: #3c3cb3;
 }
 
 .task {
-    background-color: #f0f0f0; /* Светло-серый фон задачи */
+    background-color: #ccc;
     padding: 12px;
     border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Мягкая тень */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin-bottom: 10px;
+    border: 3px dotted #ccc;
 }
 
 .task.completed-task {
-    background-color: #d3e0dc; /* Светло-зеленый фон выполненной задачи */
+    background-color: green;
 }
 
 .task .text {
     font-size: 16px;
-    color: #333; /* Темный текст */
+    color: black;
     margin-right: 10px;
-    flex: 1; /* Растягиваем текстовую часть на всю доступную ширину */
+    flex: 1;
 }
 
 .task .task-time,
 .task .task-deadline,
 .task .task-priority {
     font-size: 14px;
-    color: #666; /* Серый цвет для информации */
+    color: black;
     margin-right: 10px;
 }
 
@@ -147,8 +153,8 @@ body {
 .task .actions button {
     padding: 6px 12px;
     font-size: 14px;
-    background-color: #337AB7; /* Синяя кнопка */
-    color: white; /* Белый текст */
+    background-color: #333;
+    color: whitesmoke;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -156,7 +162,7 @@ body {
 }
 
 .task .actions button:hover {
-    background-color: #286090; /* Темнее синяя при наведении */
+    background-color: #b33c3c;
 }
 
 .subtask {
@@ -167,6 +173,34 @@ body {
 
 .subtask input[type="checkbox"] {
     margin-right: 10px;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.modal-content button {
+    padding: 8px 16px;
+    font-size: 14px;
+    margin: 10px;
+    cursor: pointer;
 }
 
 @media screen and (max-width: 768px) {
@@ -214,3 +248,179 @@ body {
         font-size: 12px;
     }
 }
+
+body.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+.task-manager.dark-mode {
+    background-color: #1e1e1e;
+}
+
+.task-manager.dark-mode h1,
+.task-manager.dark-mode h2,
+.task-manager.dark-mode h3 {
+    color: #e0e0e0;
+}
+
+.task-manager.dark-mode .task {
+    background-color: #333;
+}
+
+.task-manager.dark-mode .task.completed-task {
+    background-color: #3a3a3a;
+}
+
+.task-manager.dark-mode .task .text,
+.task-manager.dark-mode .task .task-time,
+.task-manager.dark-mode .task .task-deadline,
+.task-manager.dark-mode .task .task-priority,
+.task-manager.dark-mode .task .actions button {
+    color: #e0e0e0;
+}
+
+.task-manager.dark-mode .task .actions button {
+    background-color: #555;
+}
+
+.task-manager.dark-mode .task .actions button:hover {
+    background-color: #777;
+}
+
+.task-manager.dark-mode .list-actions button {
+    background-color: #555;
+}
+
+.task-manager.dark-mode .list-actions button:hover {
+    background-color: #777;
+}
+
+.task-manager.dark-mode .filter-options label {
+    color: whitesmoke;
+}
+
+.task-manager.dark-mode .task.completed-task {
+    background-color: green;
+}
+
+.list-actions button {
+    position: relative;
+    display: inline-block;
+    background-color: #ccc;
+   /* Gradient background */
+    color: black;
+   /* White text color */
+    font-family: "Segoe UI", sans-serif;
+   /* Stylish and legible font */
+    font-weight: bold;
+    font-size: 18px;
+   /* Large font size */
+    border: none;
+   /* No border */
+    border-radius: 30px;
+   /* Rounded corners */
+    padding: 14px 28px;
+   /* Large padding */
+    cursor: pointer;
+   /* Cursor on hover */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+   /* Subtle shadow */
+    animation: button-shimmer 2s infinite;
+    transition: all 0.3s ease-in-out;
+   /* Smooth transition */
+  }
+  
+  /* Hover animation */
+  .list-actions button:hover {
+    background: linear-gradient(to bottom, #2c2f63, #5b67b7);
+    animation: button-particles 1s ease-in-out infinite;
+    transform: translateY(-2px);
+  }
+  
+  /* Click animation */
+  .list-actions button:active {
+    transform: scale(0.95);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Shimmer animation */
+  @keyframes button-shimmer {
+    0% {
+      background-position: left top;
+    }
+  
+    100% {
+      background-position: right bottom;
+    }
+  }
+  
+  /* Particle animation */
+  @keyframes button-particles {
+    0% {
+      background-position: left top;
+    }
+  
+    100% {
+      background-position: right bottom;
+    }
+  }
+
+  input {
+    background-color: #383838;
+    border: 1ex solid none;
+    border-top-width: 1.7em;
+    margin: 0;
+    padding: 0;
+    color: #383838;
+    word-wrap: break-word;
+    height: 30px;
+    font-size: 17px;
+    text-align: center;
+    transition: all 1s;
+    max-width: 190px;
+    font-weight: bold;
+    font-family: 'Courier New', Courier, monospace;
+   }
+   
+   input:hover {
+    border-top-width: 0.2em;
+    background-color: #f1e8e8;
+   }
+   
+   input:focus {
+    border-top-width: 0.2em;
+    background-color: #f1e8e8;
+   }
+  
+  button {
+    border: 0 solid;
+    box-sizing: border-box;
+    --button_radius: 0.75em;
+    --button_color: #e8e8e8;
+    --button_outline_color: #000000;
+    font-size: 17px;
+    font-weight: bold;
+    border: none;
+    border-radius: var(--button_radius);
+    background: var(--button_outline_color);
+    display: block;
+    box-sizing: border-box;
+    border: 2px solid var(--button_outline_color);
+    border-radius: var(--button_radius);
+    padding: 0.75em 1.5em;
+    background: var(--button_color);
+    color: var(--button_outline_color);
+    transform: translateY(-0.2em);
+    transition: transform 0.1s ease;
+  }
+
+  button:hover {
+    /* Pull the button upwards when hovered */
+    transform: translateY(-0.33em);
+  }
+
+  button:active {
+    /* Push the button downwards when pressed */
+    transform: translateY(0);
+  }

@@ -266,3 +266,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
   setInterval(checkDeadlines, 60000);  // Проверяем дедлайны каждую минуту
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+    const themeSwitch = document.getElementById('theme-switch');
+    const taskManager = document.querySelector('.task-manager');
+
+    themeSwitch.addEventListener('change', () => {
+        if (themeSwitch.checked) {
+            document.body.classList.add('dark-mode');
+            taskManager.classList.add('dark-mode');
+            localStorage.setItem('theme', 'dark');
+        } else {
+            document.body.classList.remove('dark-mode');
+            taskManager.classList.remove('dark-mode');
+            localStorage.setItem('theme', 'light');
+        }
+    });
+
+    if (localStorage.getItem('theme') === 'dark') {
+        themeSwitch.checked = true;
+        document.body.classList.add('dark-mode');
+        taskManager.classList.add('dark-mode');
+    }
+});

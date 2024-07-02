@@ -12,6 +12,7 @@
         <div class="task-input">
             <input type="text" id="search-task" placeholder="Поиск задач">
             <button id="create-task-list">Создать список задач</button>
+            <button id="sort-tasks">Сортировать по дедлайну</button>
         </div>
         <div class="filter-options">
             <label for="filter-status">Статус:</label>
@@ -23,9 +24,12 @@
             <label for="filter-deadline">Дедлайн:</label>
             <input type="date" id="filter-deadline">
         </div>
-        <div id="task-lists">
-            <!-- Списки задач будут добавляться сюда -->
-        </div>
+        <label class="theme-switch">
+            <input type="checkbox" id="theme-switch">
+            Темная тема
+        </label>
+        <button id="export-tasks">Экспортировать задачи</button>        
+        <div id="task-lists"></div>
     </div>
     <script src="../js/main.js"></script>
 </body>
